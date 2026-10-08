@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Kiểm Tra Hóa Học</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
+        
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #f3f4f6;
+            color: black; /* Màu chữ đen chuẩn in ấn */
+        }
+
+        .paper {
+            background-color: white;
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 3rem 5rem;
+            font-size: 2.5rem; 
+            line-height: 1.5;
+        }
+
+        /* Header Formating (Bảng điểm và thông tin) */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .student-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .info-row strong {
+            white-space: nowrap;
+        }
+
+        .info-row input {
+            flex: 1;
+            border: none;
+            border-bottom: 3px dotted black; /* Dòng kẻ chấm bi */
+            background: transparent;
+            font-family: inherit;
+            font-size: 2.5rem;
+            padding: 0 0.5rem;
+            margin-left: 0.5rem;
+            outline: none;
+            font-weight: bold;
+        }
+
+        /* Khung bảng điểm */
+        .grading-table {
+            width: 45%;
+            border-collapse: collapse;
+            border: 4px solid black;
+            margin-left: 2rem;
+        }
+
+        .grading-table th, .grading-table td {
+            border: 2px solid black;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .grading-table th {
+            font-weight: bold;
+            height: 60px;
+        }
+
+        .grading-table td {
+            height: 160px;
+            vertical-align: top;
+        }
+
+        #final-score {
+            font-size: 5rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+        }
+
+        #teacher-remark {
+            font-size: 2.8rem;
+            font-style: italic;
+            font-weight: bold;
+            vertical-align: middle;
+            padding: 1rem;
+        }
+
+        /* Title Formating */
+        .main-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            margin-top: 2rem;
+        }
+
+        .sub-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .exam-code {
+            text-align: center;
+            font-size: 2.2rem;
+            font-style: italic;
+            margin-top: 0.5rem;
+            margin-bottom: 4rem;
+        }
+
+        /* Sections and Questions Formating */
+        .part-title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .instruction {
+            font-style: italic;
+            margin-bottom: 2.5rem;
+        }
+
+        .question {
+            margin-bottom: 3rem;
+        }
+
+        .question p {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem 4rem;
+            margin-top: 1rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Nút radio tròn, mỏng giống trên giấy */
+        .option-input {
+            appearance: none;
+            width: 2.5rem; 
+            height: 2.5rem;
+            border: 2px solid black; 
+            border-radius: 50%;
+            margin-right: 1.5rem;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+        }
+
+        .option-input::before {
+            content: "";
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            background-color: black; 
+        }
+
+        .option-input:checked::before {
+            transform: scale(1);
+        }
+
+        /* Table & Inputs for Part II & III */
+        .tf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .tf-table th, .tf-table td {
+            border: 2px solid black;
+            padding: 1.5rem;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .tf-table td:first-child {
+            text-align: left;
+        }
+
+        .tf-radio {
+            cursor: pointer;
+            width: 2.5rem;
+            height: 2.5rem;
+            accent-color: black;
+        }
+
+        .fill-blank-input {
+            border: none;
+            border-bottom: 3px dotted black;
+            background: transparent;
+            font-family: inherit;
+            font-size: 2.5rem;
+            width: 150px;
+            text-align: center;
+            outline: none;
+            font-weight: bold;
+        }
+
+        .submit-btn {
+            background-color: white;
+            color: black;
+            border: 3px solid black;
+            padding: 1.5rem 4rem;
+            font-size: 2.5rem;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 4rem auto 0;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #f3f4f6;
+        }
+
+        .result-text { font-weight: bold; margin-left: 0.5rem; }
+        .correct { color: #16a34a; }
+        .incorrect { color: #dc2626; }
+    </style>
+</head>
+<body>
+
+<div class="paper">
+    <div class="header-section">
+        <div class="student-info">
+            <div class="info-row"><strong>TRƯỜNG THCS</strong> <input type="text"></div>
+            <div class="info-row"><strong>Họ và tên:</strong> <input type="text"></div>
+            <div class="info-row"><strong>Lớp:</strong> <input type="text"></div>
+        </div>
+        <table class="grading-table">
+            <tr>
+                <th style="width: 40%;">Điểm</th>
+                <th>Lời phê của giáo viên</th>
+            </tr>
+            <tr>
+                <td><div id="final-score"></div></td>
+                <td id="teacher-remark"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="main-title">PHIẾU KIỂM TRA MÔN HÓA HỌC</div>
+    <div class="sub-title">(THỜI GIAN LÀM BÀI: 15 PHÚT)</div>
+    <div class="exam-code">MÃ ĐỀ: 863</div>
+
+    <form id="quiz-form">
+        <!-- Phần I: Trắc nghiệm nhiều lựa chọn -->
+        <div class="mb-12">
+            <div class="part-title">I. PHẦN TRẮC NGHIỆM NHIỀU LỰA CHỌN (3.0 ĐIỂM)</div>
+            <div class="instruction">Khoanh tròn vào một chữ cái A, B, C hoặc D đứng trước câu trả lời đúng nhất.</div>
+            
+            <div class="question" id="q1">
+                <p><strong>Câu 1:</strong> Phần lớn các nguyên tố hoá học trong bảng tuần hoàn là</p>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q1" value="A" class="option-input"> <strong>A.</strong> kim loại.</label>
+                    <label class="option-label"><input type="radio" name="q1" value="B" class="option-input"> <strong>B.</strong> phi kim.</label>
+                    <label class="option-label"><input type="radio" name="q1" value="C" class="option-input"> <strong>C.</strong> khí hiếm.</label>
+                    <label class="option-label"><input type="radio" name="q1" value="D" class="option-input"> <strong>D.</strong> chất khí.</label>
+                </div>
+                <span class="result-text"></span>
+            </div>
+
+            <div class="question" id="q2">
+                <p><strong>Câu 2:</strong> Nguyên tố nào được sử dụng trong thuốc tẩy gia dụng?</p>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q2" value="A" class="option-input"> <strong>A.</strong> Iodine.</label>
+                    <label class="option-label"><input type="radio" name="q2" value="B" class="option-input"> <strong>B.</strong> Bromine.</label>
+                    <label class="option-label"><input type="radio" name="q2" value="C" class="option-input"> <strong>C.</strong> Chlorine.</label>
+                    <label class="option-label"><input type="radio" name="q2" value="D" class="option-input"> <strong>D.</strong> Fluorine.</label>
+                </div>
+                <span class="result-text"></span>
+            </div>
+
+            <div class="question" id="q3">
+                <p><strong>Câu 3:</strong> Nguyên tố nào sau đây là nguyên tố là phi kim?</p>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q3" value="A" class="option-input"> <strong>A.</strong> Na.</label>
+                    <label class="option-label"><input type="radio" name="q3" value="B" class="option-input"> <strong>B.</strong> S.</label>
+                    <label class="option-label"><input type="radio" name="q3" value="C" class="option-input"> <strong>C.</strong> Al.</label>
+                    <label class="option-label"><input type="radio" name="q3" value="D" class="option-input"> <strong>D.</strong> Be.</label>
+                </div>
+                <span class="result-text"></span>
+            </div>
+        </div>
+
+        <!-- Phần II: Trắc nghiệm Đúng/Sai -->
+        <div class="mb-12">
+            <div class="part-title">II. PHẦN TRẮC NGHIỆM ĐÚNG SAI (4.0 ĐIỂM)</div>
+            <div class="instruction">Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.</div>
+
+            <div class="question" id="q4">
+                <p><strong>Câu 4:</strong> Sulfur (S) là chất rắn, xốp, màu vàng hơi nhạt ở điều kiện thường. Sulfur và hợp chất của nó được sử dụng trong acquy, bột giặt, thuốc diệt nấm; do dễ cháy nên S còn được dùng để sản xuất các loại diêm, thuốc súng, pháo hoa,…Trong bảng tuần hoàn, nguyên tố S nằm ở chu kì 3, nhóm VIA.</p>
+                
+                <table class="tf-table">
+                    <thead>
+                        <tr>
+                            <th>Phát biểu</th>
+                            <th width="120">Đúng</th>
+                            <th width="120">Sai</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>a) Nguyên tử của nguyên tố S có 6 lớp electron. <span class="result-text" id="res-4a"></span></td>
+                            <td><input type="radio" name="q4a" value="True" class="tf-radio"></td>
+                            <td><input type="radio" name="q4a" value="False" class="tf-radio"></td>
+                        </tr>
+                        <tr>
+                            <td>b) S có 3 electron thuộc lớp ngoài cùng. <span class="result-text" id="res-4b"></span></td>
+                            <td><input type="radio" name="q4b" value="True" class="tf-radio"></td>
+                            <td><input type="radio" name="q4b" value="False" class="tf-radio"></td>
+                        </tr>
+                        <tr>
+                            <td>c) S là nguyên tố phi kim. <span class="result-text" id="res-4c"></span></td>
+                            <td><input type="radio" name="q4c" value="True" class="tf-radio"></td>
+                            <td><input type="radio" name="q4c" value="False" class="tf-radio"></td>
+                        </tr>
+                        <tr>
+                            <td>d) Nguyên tử của nguyên tố S có 16 electron. <span class="result-text" id="res-4d"></span></td>
+                            <td><input type="radio" name="q4d" value="True" class="tf-radio"></td>
+                            <td><input type="radio" name="q4d" value="False" class="tf-radio"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Phần III: Trắc nghiệm trả lời ngắn -->
+        <div class="mb-12">
+            <div class="part-title">III. PHẦN TRẮC NGHIỆM TRẢ LỜI NGẮN (3.0 ĐIỂM)</div>
+            
+            <div class="question" id="q5">
+                <p><strong>Câu 5:</strong> Cho các nguyên tố sau: Na, Br, K, Ca, Cl, Ba, Be, O, N, Cu.</p>
+                <p style="margin-top: 1rem;">Số nguyên tố phi kim là <input type="text" id="q5-ans" class="fill-blank-input" autocomplete="off">.</p>
+                <span class="result-text" id="res-5"></span>
+            </div>
+        </div>
+
+        <button type="button" class="submit-btn" onclick="chamDiem()">NỘP BÀI</button>
+    </form>
+</div>
+
+<script>
+    const answers = {
+        q1: 'A',
+        q2: 'C',
+        q3: 'B',
+        q4a: 'False',
+        q4b: 'False',
+        q4c: 'True',
+        q4d: 'True',
+        q5: '4' // Br, Cl, O, N
+    };
+
+    function chamDiem() {
+        let score = 0;
+        const totalQuestions = 8; // 3 MCQs + 4 T/F + 1 Fill in the blank
+        let correctCount = 0;
+
+        // Check Part I
+        for (let i = 1; i <= 3; i++) {
+            const qName = 'q' + i;
+            const selected = document.querySelector(`input[name="${qName}"]:checked`);
+            const resultSpan = document.querySelector(`#${qName} .result-text`);
+            
+            if (selected) {
+                if (selected.value === answers[qName]) {
+                    resultSpan.textContent = "✔ Đúng";
+                    resultSpan.className = "result-text correct";
+                    correctCount++;
+                } else {
+                    resultSpan.textContent = `✘ Sai (Đáp án: ${answers[qName]})`;
+                    resultSpan.className = "result-text incorrect";
+                }
+            } else {
+                resultSpan.textContent = "Chưa trả lời";
+                resultSpan.className = "result-text incorrect";
+            }
+            // Disable inputs
+            document.querySelectorAll(`input[name="${qName}"]`).forEach(input => input.disabled = true);
+        }
+
+        // Check Part II
+        const tfParts = ['a', 'b', 'c', 'd'];
+        tfParts.forEach(part => {
+            const qName = 'q4' + part;
+            const selected = document.querySelector(`input[name="${qName}"]:checked`);
+            const resultSpan = document.getElementById(`res-4${part}`);
+            
+            if (selected) {
+                if (selected.value === answers[qName]) {
+                    resultSpan.innerHTML = "<span class='correct'>✔</span>";
+                    correctCount++;
+                } else {
+                    resultSpan.innerHTML = `<span class='incorrect'>✘ (ĐA: ${answers[qName] === 'True' ? 'Đúng' : 'Sai'})</span>`;
+                }
+            } else {
+                resultSpan.innerHTML = "<span class='incorrect'>- Chưa TL</span>";
+            }
+             document.querySelectorAll(`input[name="${qName}"]`).forEach(input => input.disabled = true);
+        });
+
+        // Check Part III
+        const q5Ans = document.getElementById('q5-ans').value.trim();
+        const res5Span = document.getElementById('res-5');
+        const q5Input = document.getElementById('q5-ans');
+        
+        if (q5Ans === answers.q5) {
+            res5Span.textContent = "✔ Đúng";
+            res5Span.className = "result-text correct";
+            correctCount++;
+        } else {
+            res5Span.textContent = `✘ Sai (Đáp án: ${answers.q5})`;
+            res5Span.className = "result-text incorrect";
+        }
+        q5Input.disabled = true;
+
+        // Calculate Score (scale to 10)
+        score = (correctCount / totalQuestions) * 10;
+        
+        // Display Score
+        const scoreDisplay = document.getElementById('final-score');
+        const remarkDisplay = document.getElementById('teacher-remark');
+        scoreDisplay.textContent = score.toFixed(1);
+        
+        if(score >= 8) {
+            scoreDisplay.style.color = '#16a34a'; 
+            if(remarkDisplay) {
+                remarkDisplay.textContent = "Hiểu bài tốt";
+                remarkDisplay.style.color = '#16a34a';
+            }
+        } 
+        else if(score >= 5) {
+            scoreDisplay.style.color = '#d97706'; 
+            if(remarkDisplay) {
+                remarkDisplay.textContent = "Cần ôn bài kỹ hơn";
+                remarkDisplay.style.color = '#d97706';
+            }
+        } 
+        else {
+            scoreDisplay.style.color = '#dc2626'; 
+            if(remarkDisplay) {
+                remarkDisplay.textContent = "Cần ôn bài kỹ hơn";
+                remarkDisplay.style.color = '#dc2626';
+            }
+        }
+
+        // Disable submit button
+        document.querySelector('.submit-btn').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
